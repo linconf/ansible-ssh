@@ -9,6 +9,6 @@
     mode: '{{ item.mode | default("0600") }}'
   when: (item.owner is defined and item.owner)
   with_flattened:
-    - '{{ ssh_config_file }}'
-    - '{{ ssh_host_config_file }}'
     - '{{ ssh_group_config_file }}'
+    - '{{ ssh_host_config_file }}'
+    - '{{ ssh_config_file }}'
