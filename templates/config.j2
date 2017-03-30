@@ -1,0 +1,19 @@
+{% for option in item.options %}
+Host {{ option.Host }}
+{% if option.Port is defined -%}
+  Port {{ option.Port }}
+{% endif %}
+{% if option.User is defined -%}
+  User {{ option.User }}
+{% endif %}
+{% if option.IdentityFile is defined -%}
+  IdentityFile {{ option.IdentityFile }}
+{% endif %}
+{% if option.BatchMode is defined -%}
+  BatchMode {{ option.BatchMode }}
+{% endif %}
+{% if option.BindAddress is defined -%}
+  BindAddress {{ option.BindAddress }}
+{% endif %}
+
+{% endfor %}

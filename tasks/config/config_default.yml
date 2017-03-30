@@ -1,0 +1,14 @@
+---
+
+- name: config - Setup config files
+  template:
+    src: config.j2
+    dest: "{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/config"
+    owner: '{{ item.owner }}'
+    group: '{{ item.group | default(item.owner) }}'
+    mode: '{{ item.mode | default("0600") }}'
+  when: (item.owner is defined and item.owner)
+  with_flattened:
+    - '{{ ssh_config_file }}'
+    - '{{ ssh_host_config_file }}'
+    - '{{ ssh_group_config_file }}'

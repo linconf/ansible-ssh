@@ -1,0 +1,80 @@
+---
+
+#| Set to `False` to disable the role
+
+ssh_role_enabled: True
+
+#|  Config File
+
+ssh_config_default_host: '*'
+ssh_config_default_port: '22'
+
+ssh_password: ''
+ssh_default_state: 'present'
+
+#|  Generate SSH Key(s)
+ssh_private_keys: []
+#  - owner: 'username'
+#    group: 'default(<owner>)'
+#    ssh_path: 'default(~<owner>/.ssh/)'
+#    key_name: 'default(id_rsa.pub)'
+#    password_protected: 'default(false)'
+#    password: # Optional: 'default( {{ssh_password}} )'
+ssh_host_private_keys: []
+ssh_group_private_keys: []
+
+
+#|  "Pull" Public Key(s) from Remote to Ansible
+ssh_pull_pub: []
+#  - owner: 'username'
+#    ssh_path: 'default(~<owner>/.ssh/)'
+#    pull_path: 'default({{ ssh_secret_path }}/{{ ansible_hostname }}/)'
+#    pub_key_name: 'default(id_rsa.pub)'
+
+
+#|  "Push" Public Key(s) from Ansible to Remote
+ssh_push_pub: []
+#  - owner: 'username'
+#    group: 'default(<owner>)'
+#    ssh_path: 'default(~<owner>/.ssh/)'
+#    pull_path: 'default({{ ssh_secret_path }}/{{ ansible_hostname }}/)'
+#    pub_key_name: 'default(id_rsa.pub)'
+ssh_host_push_pub: []
+ssh_group_push_pub: []
+
+
+#|  Define Authorized Keys
+ssh_authorized_keys: []
+#  - owner: 'username'
+#    pub_key_path: '' # {{ ssh_secret_path }} / <pub_key_path> / <pub_key_name>
+#    pub_key_name: 'default(id_rsa.pub)'
+#    key: #(Optional - Alternative Method)
+ssh_host_authorized_keys: []
+ssh_group_authorized_keys: []
+
+
+ssh_known_hosts: []
+ssh_host_known_hosts: []
+ssh_group_known_hosts: []
+
+#|  Setup SSH Config
+ssh_config_file: []
+ # - user: 'username'
+ #   options:
+ #     - Host: '*'
+ #       Port: ''
+ #       User: ''
+ #       IdentityFile: ''
+ #       BatchMode: ''
+ #       BindAddress: ''
+ssh_host_config_file: []
+ssh_group_config_file: []
+
+ssh_home_path: '~'
+ssh_key_path: '/.ssh/'
+ssh_key_name: 'id_rsa'
+ssh_pub_key_name: 'id_rsa.pub'
+
+#|  Destination on Ansible controller to store public keys
+ssh_secret_path: 'secret/ssh/'
+

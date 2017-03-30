@@ -1,0 +1,11 @@
+---
+
+- name: authorized-keys - Setup authorized_keys files
+  authorized_key:
+    user: '{{ item.owner }}'
+    key: '{{ lookup("file", ssh_secret_path + item.pub_key_path + (item.pub_key_name | d(ssh_pub_key_name))) }}'
+    state: '{{ item.state | d(ssh_default_state) }}'
+  with_flattened:
+    - '{{ ssh_authorized_keys }}'
+    - '{{ ssh_host_authorized_keys }}'
+    - '{{ ssh_group_authorized_keys }}'

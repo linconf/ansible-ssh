@@ -1,0 +1,78 @@
+---
+
+- name: main - Ensure directories exist
+  include: '{{ found_item }}'
+  with_first_found:
+    - 'setup/directories_{{ ansible_distribution }}.yml'
+    - 'setup/directories_{{ ansible_os_family }}.yml'
+    - 'setup/directories_default.yml'
+  when: ssh_role_enabled | bool
+  loop_control:
+    loop_var: found_item
+  tags: [ 'ssh', 'ssh-client', 'ssh-directories' ]
+
+- name: main - Generate requested private keys
+  include: '{{ found_item }}'
+  with_first_found:
+    - 'keys/private-keys_{{ ansible_distribution }}.yml'
+    - 'keys/private-keys_{{ ansible_os_family }}.yml'
+    - 'keys/private-keys_default.yml'
+  when: ssh_role_enabled | bool
+  loop_control:
+    loop_var: found_item
+  tags: [ 'ssh', 'ssh-client', 'ssh-private-keys' ]
+
+- name: main - Pull public keys to Ansible controller
+  include: '{{ found_item }}'
+  with_first_found:
+    - 'keys/pull-keys_{{ ansible_distribution }}.yml'
+    - 'keys/pull-keys_{{ ansible_os_family }}.yml'
+    - 'keys/pull-keys_default.yml'
+  when: ssh_role_enabled | bool
+  loop_control:
+    loop_var: found_item
+  tags: [ 'ssh', 'ssh-client', 'ssh-pull-keys' ]
+
+- name: main - Push public keys from Ansible controller
+  include: '{{ found_item }}'
+  with_first_found:
+    - 'keys/push-keys_{{ ansible_distribution }}.yml'
+    - 'keys/push-keys_{{ ansible_os_family }}.yml'
+    - 'keys/push-keys_default.yml'
+  when: ssh_role_enabled | bool
+  loop_control:
+    loop_var: found_item
+  tags: [ 'ssh', 'ssh-client', 'ssh-push-keys' ]
+
+- name: main - Setup authorized keys
+  include: '{{ found_item }}'
+  with_first_found:
+    - 'config/authorized-keys_{{ ansible_distribution }}.yml'
+    - 'config/authorized-keys_{{ ansible_os_family }}.yml'
+    - 'config/authorized-keys_default.yml'
+  when: ssh_role_enabled | bool
+  loop_control:
+    loop_var: found_item
+  tags: [ 'ssh', 'ssh-client', 'ssh-authorized-keys' ]
+
+- name: main - Setup known hosts
+  include: '{{ found_item }}'
+  with_first_found:
+    - 'config/known-hosts_{{ ansible_distribution }}.yml'
+    - 'config/known-hosts_{{ ansible_os_family }}.yml'
+    - 'config/known-hosts_default.yml'
+  when: ssh_role_enabled | bool
+  loop_control:
+    loop_var: found_item
+  tags: [ 'ssh', 'ssh-client', 'ssh-known-hosts' ]
+
+- name: main - Setup .ssh/config
+  include: '{{ found_item }}'
+  with_first_found:
+    - 'config/config_{{ ansible_distribution }}.yml'
+    - 'config/config_{{ ansible_os_family }}.yml'
+    - 'config/config_default.yml'
+  when: ssh_role_enabled | bool
+  loop_control:
+    loop_var: found_item
+  tags: [ 'ssh', 'ssh-client', 'ssh-config' ]

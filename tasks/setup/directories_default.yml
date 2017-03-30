@@ -1,0 +1,40 @@
+---
+
+- name: directories - SSH Private Key Directory Exists
+  file:
+    path: '{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}'
+    state: directory
+    owner: '{{ item.owner }}'
+    group: '{{ item.group | default(item.owner) }}'
+    mode: 0700
+  when: item.owner is defined
+  with_flattened:
+    - '{{ ssh_private_keys }}'
+    - '{{ ssh_host_private_keys }}'
+    - '{{ ssh_group_private_keys }}'
+
+- name: directories - SSH Authorized Key Directory Exists
+  file:
+    path: '{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}'
+    state: directory
+    owner: '{{ item.owner }}'
+    group: '{{ item.group | default(item.owner) }}'
+    mode: 0700
+  when: item.owner is defined
+  with_flattened:
+    - '{{ ssh_authorized_keys }}'
+    - '{{ ssh_host_authorized_keys }}'
+    - '{{ ssh_group_authorized_keys }}'
+
+- name: directories - SSH Public Key Directory Exists
+  file:
+    path: '{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}'
+    state: directory
+    owner: '{{ item.owner }}'
+    group: '{{ item.group | default(item.owner) }}'
+    mode: 0700
+  when: item.owner is defined
+  with_flattened:
+    - '{{ ssh_push_pub }}'
+    - '{{ ssh_host_push_pub }}'
+    - '{{ ssh_group_push_pub }}'

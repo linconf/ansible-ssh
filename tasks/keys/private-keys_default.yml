@@ -1,0 +1,80 @@
+---
+
+#|  Check Password
+
+- name: private-keys - Check if Password Required
+  stat: 
+    path: '{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/{{ item.key_name | d(ssh_keys_key_name) }}'
+  register: _ssh_keystate
+  when: (item.password_protected is defined and item.password_protected | bool) and
+    (ssh_password == '' and (not item.password is defined or item.password == ''))
+  with_flattened:
+    - '{{ ssh_private_keys }}'
+    - '{{ ssh_host_private_keys }}'
+    - '{{ ssh_group_private_keys }}'
+
+- name: private-keys - Check if Key Already Exists
+  fail: 
+    msg: 'Password required, not provided: User - {{ item.stat }}'
+  when: ((item.stat is defined and not item.stat.exists) and 
+         (item.skipped is undefined))
+  with_items:
+    - '{{ _ssh_keystate.results }}'
+
+#|  Generate Private Key(s)
+
+- name: private-keys - Generate Password-less Private Key(s)
+  shell: |
+    if [ ! -f {{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/{{ item.key_name | d(ssh_key_name) }} ] ; then
+      ssh-keygen -t rsa -N "" \
+      -f {{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/{{ item.key_name | d(ssh_key_name) }}
+    fi
+  args:
+    creates: '{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/{{ item.key_name | d(ssh_key_name) }}'
+  when: not item.password_protected is defined or not (item.password_protected | bool)
+  with_flattened:
+    - '{{ ssh_private_keys }}'
+    - '{{ ssh_host_private_keys }}'
+    - '{{ ssh_group_private_keys }}'
+
+- name: private-keys - Generate Protected Private Key(s)
+  shell: |
+    if [ ! -f {{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/{{ item.key_name | d(ssh_key_name) }} ] ; then
+      ssh-keygen -t rsa -N {{ item.password | d(ssh_password) }} \
+      -f {{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/{{ item.key_name | d(ssh_key_name) }}
+    fi
+  args:
+    creates: '{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/{{ item.key_name | d(ssh_key_name) }}'
+  when: item.password_protected is defined and (item.password_protected | bool)
+  with_flattened:
+    - '{{ ssh_private_keys }}'
+    - '{{ ssh_host_private_keys }}'
+    - '{{ ssh_group_private_keys }}'
+
+#|  Verify File Permissions
+
+- name: private-keys - Verify Private Key Permissions
+  file:
+    path: '{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/{{ item.key_name | d(ssh_key_name) }}'
+    state: file
+    owner: '{{ item.owner }}'
+    group: '{{ item.group | d(item.owner) }}'
+    mode: '0600'
+  with_flattened:
+    - '{{ ssh_private_keys }}'
+    - '{{ ssh_host_private_keys }}'
+    - '{{ ssh_group_private_keys }}'
+
+- name: private-keys - Verify Public Key Permissions
+  file:
+    path: '{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/{{ item.key_name | d(ssh_key_name) }}.pub'
+    state: file
+    owner: '{{ item.owner }}'
+    group: '{{ item.group | d(item.owner) }}'
+    mode: '0600'
+  with_flattened:
+    - '{{ ssh_private_keys }}'
+    - '{{ ssh_host_private_keys }}'
+    - '{{ ssh_group_private_keys }}'
+
+  

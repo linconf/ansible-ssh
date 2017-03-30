@@ -1,0 +1,9 @@
+---
+
+# - name: known-hosts - Update known_hosts file
+#   template:
+#     src: known_hosts.j2
+#     dest: "{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}//known_hosts"
+#     owner: '{{ ssh_known_hosts_file.owner }}'
+#     group: '{{ ssh_known_hosts_file.owner }}'
+#     mode: 0644
