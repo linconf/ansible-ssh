@@ -4,8 +4,8 @@
 
 - name: pull-keys - Fetch Public Key
   fetch:
-    src: '{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/{{ item.pub_key_name | d(ssh_keys_pub_key_name) }}'
-    dest: '{{ item.pull_path | d(ssh_secret_path + ansible_hostname) }}/{{ item.pub_key_name | d(ssh_keys_pub_key_name) }}'
+    src: '{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/{{ item.pub_key_name | d(ssh_pub_key_name) }}'
+    dest: '{{ item.pull_path | d(ssh_secret_path + ansible_hostname) }}/{{ item.pub_key_name | d(ssh_pub_key_name) }}'
     flat: yes
     fail_on_missing: yes
   with_items:
