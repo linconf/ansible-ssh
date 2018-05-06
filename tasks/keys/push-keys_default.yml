@@ -4,8 +4,8 @@
 
 - name: push-keys - Copy Public Key to Host
   copy:
-    src: '{{ item.pull_path | d(ssh_secret_path + ansible_hostname) }}/{{ item.pub_key_name | d(ssh_keys_pub_key_name) }}'
-    dest: '{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/{{ item.pub_key_name | d(ssh_keys_pub_key_name) }}'
+    src: '{{ item.pull_path | d(ssh_secret_path + ansible_hostname) }}/{{ item.pub_key_name | d(ssh_pub_key_name) }}'
+    dest: '{{ item.ssh_key_path | d(ssh_home_path + item.owner + ssh_key_path) }}/{{ item.pub_key_name | d(ssh_pub_key_name) }}'
     owner: '{{ item.owner }}'
     group: '{{ item.group | default(item.owner) }}'
     mode: '0600'
